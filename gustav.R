@@ -51,3 +51,15 @@ map_counties("Gustav-2008", metric = "wind", wind_source = "ext_tracks")
 map_counties(storm = "Gustav-2008", metric = "distance")
 
 map_distance_exposure(storm = "Gustav-2008", dist_limit = 75)
+
+library(weathermetrics)
+
+map_wind_exposure(storm = "Gustav-2008",
+                  wind_limit = convert_wind_speed(34, "knots","mps"))
+
+map_event_exposure(storm = "Gustav-2008", event_type = "flood")
+
+map_event_exposure(storm = "Gustav-2008", event_type = "tornado")
+
+
+map_tracks(storms = "Gustav-2008")
