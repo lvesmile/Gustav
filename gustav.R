@@ -2,7 +2,11 @@ library(tidyverse)
 library(drat)
 library(hurricaneexposuredata)
 library(hurricaneexposure)
-
+library(tmap)
+library(geostat)
+library(sp)
+library(gstat)
+library(geoR)
 addRepo("geanders")
 
 
