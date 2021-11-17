@@ -19,6 +19,16 @@ library(tidyr)
 library(ggplot2)
 ```
 
+## Map
+```{r}
+# Storm track
+
+
+```
+
+
+
+
 ## Data cleaning and wrangling
 
 ```{r}
@@ -148,6 +158,6 @@ ggplot()+
   scale_color_manual(values = colors)
 ```
 
-
+## Descirbe storm track from landfall to inland boundary
 
 
