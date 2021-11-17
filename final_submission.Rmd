@@ -63,9 +63,9 @@ abline(v = v_fit$range[2], col = "gray")
 
 ```{r}
 # variogram: vmax_gust
-gustav_var$y = as.numeric(gustav_var$latitude)
-gustav_var$x = as.numeric(gustav_var$longitude)
-coordinates(gustav_var) = ~x+y
+#gustav_var$y = as.numeric(gustav_var$latitude)
+#gustav_var$x = as.numeric(gustav_var$longitude)
+#coordinates(gustav_var) = ~x+y
 gaussian_variogram <- function (n, ps, r)
   function (h) n + ps * (1 - exp(-(h / r) ^ 2))
 v_f <- gaussian_variogram(v_fit$psill[1], v_fit$psill[2], v_fit$range[2])
@@ -91,6 +91,11 @@ data42007 <- read.csv("buoy data/42007.csv")
 data42039 <- read.csv("buoy data/42039.csv")
 data42040 <- read.csv("buoy data/42040.csv")
 data42059 <- read.csv("buoy data/42059.csv")
+colnames(data42003)[1] <- "X.YY"
+colnames(data42007)[1] <- "X.YY"
+colnames(data42039)[1] <- "X.YY"
+colnames(data42040)[1] <- "X.YY"
+colnames(data42059)[1] <- "X.YY"
 
 # data clean
 hi <- function(x){
