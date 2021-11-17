@@ -42,9 +42,7 @@ abline(v = v_fit$range[2], col = "gray")
 #plot(automap::autofitVariogram(vmax_gust ~ x+y, gustav_var))
 
 #variogram: vmax_gust
-gustav_var$y = as.numeric(gustav_var$latitude)
-gustav_var$x = as.numeric(gustav_var$longitude)
-coordinates(gustav_var) = ~x+y
+
 gaussian_variogram <- function (n, ps, r)
   function (h) n + ps * (1 - exp(-(h / r) ^ 2))
 v_f <- gaussian_variogram(v_fit$psill[1], v_fit$psill[2], v_fit$range[2])
