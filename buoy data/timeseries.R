@@ -111,14 +111,14 @@ time_series_buoy <- function(variable, name){
               "42036" = "blue", "42039" = "yellow", "42040" = "skyblue", "42059" = "orange")
   
   ggplot()+
-    geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42001"))+
-    geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42003"))+
-    geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42007")) +
-    geom_line(data = data42035_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42035"))+
-    geom_line(data = data42036_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42036"))+
-    geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42039")) +
-    geom_line(data = data42040_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42040")) +
-    geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42059")) +
+    geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42001"), lwd =0.8)+
+    geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42003"), lwd =0.8)+
+    geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42007"), lwd =0.8) +
+    geom_line(data = data42035_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42035"), lwd =0.8)+
+    geom_line(data = data42036_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42036"), lwd =0.8)+
+    geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42039"), lwd =0.8) +
+    geom_line(data = data42040_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42040"), lwd =0.8) +
+    geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric({{variable}}), color = "42059"), lwd =0.8) +
     labs(y = name, x = "time", color = "Legend")+
     scale_color_manual(values = colors)
   
@@ -145,14 +145,14 @@ colors <- c("42001" = "plum3", "42003" = "gray", "42007" = "tomato", "42035" = "
             "42036" = "blue", "42039" = "yellow", "42040" = "skyblue", "42059" = "orange")
 
 ggplot()+
-  geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(PRES), color = "42001")) +
-  geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(PRES), color = "42003")) +
-  geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric(PRES), color = "42007")) +
-  geom_line(data = data42035_clean, aes(x=date_time, y=as.numeric(PRES), color = "42035")) +
-  geom_line(data = data42036_clean, aes(x=date_time, y=as.numeric(PRES), color = "42036")) +
-  geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(PRES), color = "42039")) +
-  geom_line(data = data42040_clean, aes(x=date_time, y=as.numeric(PRES), color = "42040")) +
-  geom_line(data = j, aes(x=date_time, y=as.numeric(PRES), color = "42059")) +
+  geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(PRES), color = "42001"), lwd =0.8) +
+  geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(PRES), color = "42003"), lwd =0.8) +
+  geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric(PRES), color = "42007"), lwd =0.8) +
+  geom_line(data = data42035_clean, aes(x=date_time, y=as.numeric(PRES), color = "42035"), lwd =0.8) +
+  geom_line(data = data42036_clean, aes(x=date_time, y=as.numeric(PRES), color = "42036"), lwd =0.8) +
+  geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(PRES), color = "42039"), lwd =0.8) +
+  geom_line(data = data42040_clean, aes(x=date_time, y=as.numeric(PRES), color = "42040"), lwd =0.8) +
+  geom_line(data = j, aes(x=date_time, y=as.numeric(PRES), color = "42059"), lwd =0.8) +
   labs(y = "PRES", x = "time", color = "Legend")+
   scale_color_manual(values = colors)
 
@@ -162,13 +162,13 @@ data42040_clean$DEWP <- as.numeric(data42040_clean$DEWP)
 j1 <- data42040_clean %>% filter(DEWP != 999)
 
 ggplot()+
-  geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42001")) +
-  geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42003")) +
-  geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42007")) +
-  geom_line(data = data42036_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42036")) +
-  geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42039")) +
-  geom_line(data = j1, aes(x=date_time, y=as.numeric(DEWP), color = "42040")) +
-  geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42059")) +
+  geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42001"), lwd =0.8) +
+  geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42003"), lwd =0.8) +
+  geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42007"), lwd =0.8) +
+  geom_line(data = data42036_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42036"), lwd =0.8) +
+  geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42039"), lwd =0.8) +
+  geom_line(data = j1, aes(x=date_time, y=as.numeric(DEWP), color = "42040"), lwd =0.8) +
+  geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric(DEWP), color = "42059"), lwd =0.8) +
   labs(y = "DEWP", x = "time", color = "Legend")+
   scale_color_manual(values = colors)
 
@@ -182,14 +182,14 @@ j3 <- data42040_clean %>% filter(WVHT != 99)
 j4 <- data42036_clean %>% filter(WVHT != 99)
 
 ggplot()+
-  geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42001")) +
-  geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42003"))+
-  geom_line(data = j2, aes(x=date_time, y=as.numeric(WVHT), color = "42007")) +
-  geom_line(data = data42035_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42035")) +
-  geom_line(data = j4, aes(x=date_time, y=as.numeric(WVHT), color = "42036")) +
-  geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42039")) +
-  geom_line(data = j3, aes(x=date_time, y=as.numeric(WVHT), color = "42040")) +
-  geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42059")) +
+  geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42001"), lwd =0.8) +
+  geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42003"), lwd =0.8)+
+  geom_line(data = j2, aes(x=date_time, y=as.numeric(WVHT), color = "42007"), lwd =0.8) +
+  geom_line(data = data42035_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42035"), lwd =0.8) +
+  geom_line(data = j4, aes(x=date_time, y=as.numeric(WVHT), color = "42036"), lwd =0.8) +
+  geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42039"), lwd =0.8) +
+  geom_line(data = j3, aes(x=date_time, y=as.numeric(WVHT), color = "42040"), lwd =0.8) +
+  geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42059"), lwd =0.8) +
   labs(y = "WVHT", x = "time", color = "Legend")+
   scale_color_manual(values = colors)
 
