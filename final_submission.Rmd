@@ -48,6 +48,7 @@ gustav <- gustav_county %>% inner_join(gustav_winds, by=c("fips", "storm_id", "u
 
 ```{r}
 gustav_var <- gustav[, c(1, 5, 6, 9:13)]
+gustav_var <- as.data.frame(gustav_var)
 
 # variogram: precip_max
 gustav_var$y = as.numeric(gustav_var$latitude)
@@ -79,7 +80,7 @@ abline(v = v_fit$range[2], col = "gray")
 gaussian_variogram <- function (n, ps, r)
   function (h) n + ps * (1 - exp(-(h / r) ^ 2))
 v_f <- gaussian_variogram(v_fit$psill[1], v_fit$psill[2], v_fit$range[2])
-v <- variogram(vmax_gust ~ 1, gustav_var)
+v <- variogram( vmax_gust ~ 1, gustav_var)
 v_fit <- fit.variogram(v, vgm("Gau"))
 
 h <- seq(0, 50, length = 1000)
@@ -91,6 +92,14 @@ abline(v = v_fit$range[2], col = "gray")
 #v_mod_OK <- automap::autofitVariogram(vmax_gust ~ x+y, gustav_var)$var_model
 #plot(automap::autofitVariogram(vmax_gust ~ x+y, gustav_var))
 ```
+
+```{r}
+#empirical variogram
+coord <- gustav_var[,2:3]
+v_v <- variog(coords=coord, data=gustav_var$vmax_gust, estimator.type='modulus')
+plot(v_v)
+```
+
 
 ## Time seires
 
