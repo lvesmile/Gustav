@@ -18,13 +18,18 @@ rain_map <- map_counties(storm = "Gustav-2008", metric = "rainfall") +
   ggtitle("rain Gustav 2008")
 rain_map+
   ggtitle("Rain Gustav and Buoys") +
-  geom_point(data=my_sf,aes(y=latitude, x=longitude, col=factor(buoy_names)))
+  geom_point(data=my_sf,aes(y=latitude, x=longitude, 
+                            col=factor(buoy_names), shape=factor(buoy_names)))+
+  scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
 
 # add buoy data to hurricane wind map
 wind_map <- map_counties(storm = "Gustav-2008", metric = "wind", wind_var = "vmax_gust")
 wind_map +
   ggtitle("Gustav Wind and Buoys") +
-  geom_point(data=my_sf,aes(y=latitude, x=longitude, col=factor(buoy_names)))
+  geom_point(data=my_sf,aes(y=latitude, x=longitude, 
+                            col=factor(buoy_names), shape=factor(buoy_names)))+
+  scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
+
 
 #add buoy data to hurricane flood and tracks map  
 gustav_map <- map_event_exposure(storm = "Gustav-2008", event_type = "flood")
@@ -32,4 +37,6 @@ gus_flood<- map_tracks(storms = "Gustav-2008", plot_object = gustav_map, plot_po
            color = "darkgray")
 gus_flood + 
   ggtitle("Gustav Flood and Buoys") +
-  geom_point(data=my_sf,aes(y=latitude, x=longitude, col=factor(buoy_names)))
+  geom_point(data=my_sf,aes(y=latitude, x=longitude, 
+                            col=factor(buoy_names), shape=factor(buoy_names)))+
+  scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
