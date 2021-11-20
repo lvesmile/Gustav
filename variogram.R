@@ -76,3 +76,25 @@ abline(v = v_fit$range[2], col = "gray")
 #v_mod_OK <- automap::autofitVariogram(vmax_gust ~ x+y, gustav_var)$var_model
 #plot(automap::autofitVariogram(vmax_gust ~ x+y, gustav_var))
 
+#install.packages("maptools")
+library(maptools)
+library(rgdal)
+library(sp)
+library(maps)
+
+map('county',fill = TRUE, col = palette())
+ll = "+proj=longlat +ellps=WGS84"
+
+l3 = list("sp.polygons", gustav_var, lwd=.3, first=FALSE)
+grd= spsample(gustav_var, n= 5000, type="regular")
+#gus_grid <-points2grid(gustav_var, tolerance=0.76, round=1)
+
+grd=as(grd, "SpatialPixels")
+gus_kri <- krige(precip_max~1, gustav_var, newdata=grd, model=v_fit)
+spplot(gus_kri, "var1.pred", col.regions= rev(topo.colors(20)), sp.layout=list(l3))
+
+
+grid <- makegrid(gustav_var, cellsize = 0.005)
+gus_grid <- SpatialPoints(grid, proj4string = CRS(proj4string(gustav_var)))
+l4 = list("sp.polygons", gus_grid, lwd=.3, first=FALSE)
+
