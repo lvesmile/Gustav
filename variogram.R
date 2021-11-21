@@ -83,8 +83,7 @@ library(sp)
 library(maps)
 
 map('county',fill = TRUE, col = palette())
-ll = "+proj=longlat +ellps=WGS84"
-
+proj4string(gustav_var) <- CRS("+init=epsg:28992")
 l3 = list("sp.polygons", gustav_var, lwd=.3, first=FALSE)
 grd= spsample(gustav_var, n= 5000, type="regular")
 #gus_grid <-points2grid(gustav_var, tolerance=0.76, round=1)
@@ -94,7 +93,24 @@ gus_kri <- krige(precip_max~1, gustav_var, newdata=grd, model=v_fit)
 spplot(gus_kri, "var1.pred", col.regions= rev(topo.colors(20)), sp.layout=list(l3))
 
 
+library(sp)
+library(sf)
+epsg_wgs84 <- 4326
+gustav_var %>% st_as_sf(coords = c("latitude", "longitude"))%>% st_set_crs(epsg_wgs84)
 grid <- makegrid(gustav_var, cellsize = 0.005)
 gus_grid <- SpatialPoints(grid, proj4string = CRS(proj4string(gustav_var)))
 l4 = list("sp.polygons", gus_grid, lwd=.3, first=FALSE)
 
+library(tmap) # thematic map plotting
+breaks <- seq(4.5, 8, by = .5)
+tmap_arrange(
+  tm_shape(gustav_var) +
+    tm_bubbles(col = "response", palette = NULL, size = .3, breaks = breaks),
+  tm_shape(gus_grid) +
+    tm_bubbles(col = "prediction", palette = NULL, size = .15, breaks = breaks)
+)
+
+tmap_mode("view")
+tm_shape(gus_grid) +
+  tm_bubbles(col = "prediction", palette = "-RdYlBu", breaks = breaks,
+             size = .05, alpha = .5)
