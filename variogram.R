@@ -1,6 +1,7 @@
 source("gustav.R")
 library(sp)
 library(gstat)
+library(tmap)
 library(maps)
 library(geoR)
 library(sf)
