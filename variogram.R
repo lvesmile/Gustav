@@ -2,6 +2,8 @@ source("gustav.R")
 library(sp)
 library(gstat)
 library(tmap)
+library(maptools)
+#library(automap)
 
 #rain
 #lag: number of days from date when storm was closest to the county
@@ -32,7 +34,7 @@ gustav_var$y = as.numeric(gustav_var$latitude)
 gustav_var$x = as.numeric(gustav_var$longitude)
 #set up spatial coordinates 
 coordinates(gustav_var) = ~x+y
-#spjerical variogram function obtained from Luis' discussion notes
+#spherical variogram function obtained from Luis' discussion notes
 spherical_variogram <- function (n, ps, r) function (h) {
   h <- h / r
   n + ps * ifelse(h < 1, 1.5 * h - .5 * h ^ 3, 1)
@@ -47,7 +49,7 @@ v_f <- spherical_variogram(v_fit$psill[1], v_fit$psill[2], v_fit$range[2])
 h <- seq(0, 100, length = 1000)
 #plot variogram and fitted line
 plot(v$dist, v$gamma,
-     xlab = "distance", ylab = "semivariogram")
+     xlab = "distance", ylab = "semivariogram", main="Variogram for Max Precipitation")
 lines(h, v_f(h))
 abline(v = v_fit$range[2], col = "gray")
 
@@ -69,48 +71,24 @@ h <- seq(0, 50, length = 1000)
 
 #plot variogram and fitted line
 plot(v$dist, v$gamma,
-     xlab = "distance", ylab = "semivariogram")
+     xlab = "distance", ylab = "semivariogram", main="Variogram for Max Gust of Wind")
 lines(h, v_f(h))
 abline(v = v_fit$range[2], col = "gray")
 
 #v_mod_OK <- automap::autofitVariogram(vmax_gust ~ x+y, gustav_var)$var_model
 #plot(automap::autofitVariogram(vmax_gust ~ x+y, gustav_var))
 
-#install.packages("maptools")
-library(maptools)
-library(rgdal)
-library(sp)
-library(maps)
 
-map('county',fill = TRUE, col = palette())
+#set CRS for kirging
 proj4string(gustav_var) <- CRS("+init=epsg:28992")
+# set up spatial layout using sp
 l3 = list("sp.polygons", gustav_var, lwd=.3, first=FALSE)
+#create new data for spatial 
 grd= spsample(gustav_var, n= 5000, type="regular")
-#gus_grid <-points2grid(gustav_var, tolerance=0.76, round=1)
 
 grd=as(grd, "SpatialPixels")
+# use kriging to predict precip_max  
 gus_kri <- krige(precip_max~1, gustav_var, newdata=grd, model=v_fit)
-spplot(gus_kri, "var1.pred", col.regions= rev(topo.colors(20)), sp.layout=list(l3))
-
-
-library(sp)
-library(sf)
-epsg_wgs84 <- 4326
-gustav_var %>% st_as_sf(coords = c("latitude", "longitude"))%>% st_set_crs(epsg_wgs84)
-grid <- makegrid(gustav_var, cellsize = 0.005)
-gus_grid <- SpatialPoints(grid, proj4string = CRS(proj4string(gustav_var)))
-l4 = list("sp.polygons", gus_grid, lwd=.3, first=FALSE)
-
-library(tmap) # thematic map plotting
-breaks <- seq(4.5, 8, by = .5)
-tmap_arrange(
-  tm_shape(gustav_var) +
-    tm_bubbles(col = "response", palette = NULL, size = .3, breaks = breaks),
-  tm_shape(gus_grid) +
-    tm_bubbles(col = "prediction", palette = NULL, size = .15, breaks = breaks)
-)
-
-tmap_mode("view")
-tm_shape(gus_grid) +
-  tm_bubbles(col = "prediction", palette = "-RdYlBu", breaks = breaks,
-             size = .05, alpha = .5)
+# plot the prediction
+spplot(gus_kri, "var1.pred", col.regions= rev(topo.colors(20)),
+       sp.layout=list(l3), main="Kriging Prediction on Max Precipitation of Gustav")
