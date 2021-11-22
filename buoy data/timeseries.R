@@ -1,6 +1,7 @@
 library(geoR)
 library(tidyr)
 library(ggplot2)
+library(dplyr)
 
 data42001 <- read.csv("buoy data/42001.csv")
 data42003 <- read.csv("buoy data/42003.csv")
