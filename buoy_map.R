@@ -1,5 +1,5 @@
 source("gustav.R")
-source("variogram.R")
+#source("variogram.R")
 library(ggplot2)
 library(maps)
 library(sf)
