@@ -1,6 +1,5 @@
 source("gustav.R")
-source("variogram.R")
-source("buoy data/timeseries.R")
+#source("variogram.R")
 library(ggplot2)
 library(maps)
 library(sf)
@@ -15,23 +14,44 @@ my_sf <- st_as_sf(buoy, coords = c('longitude', 'latitude'))
 
 #add buoy data to hurricane rain map
 rain_map <- map_counties(storm = "Gustav-2008", metric = "rainfall") +
+<<<<<<< HEAD
   ggtitle("Rain Gustav 2008")
 rain_map
 rain_map+
+=======
+  ggtitle("rain Gustav 2008")
+rain_buoy <- rain_map+
+>>>>>>> 69e5ee59a69b0b1d612ecf76585179ed528a135c
   ggtitle("Rain Gustav and Buoys") +
   geom_point(data=my_sf,aes(y=latitude, x=longitude, 
                             col=factor(buoy_names), shape=factor(buoy_names)))+
   scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
 
+#rain_buoy
+
+#add buoy data to hurricane flood and tracks map  
+gustav_map <- map_event_exposure(storm = "Gustav-2008", event_type = "flood")
+gus_flood<- map_tracks(storms = "Gustav-2008", plot_object = gustav_map, plot_points = TRUE, 
+                       color = "darkgray")
+flood_buoy <- gus_flood + 
+  ggtitle("Gustav Flood and Buoys") +
+  geom_point(data=my_sf,aes(y=latitude, x=longitude, 
+                            col=factor(buoy_names), shape=factor(buoy_names)))+
+  scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
+#flood_buoy
+
+
 # add buoy data to hurricane wind map
 wind_map <- map_counties(storm = "Gustav-2008", metric = "wind", wind_var = "vmax_gust")
-wind_map +
+wind_buoy<- wind_map +
   ggtitle("Gustav Wind and Buoys") +
   geom_point(data=my_sf,aes(y=latitude, x=longitude, 
                             col=factor(buoy_names), shape=factor(buoy_names)))+
   scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
+#wind_buoy
 
 
+<<<<<<< HEAD
 #add buoy data to hurricane flood and tracks map  
 gustav_map <- map_event_exposure(storm = "Gustav-2008", event_type = "flood")
 gus_flood<- map_tracks(storms = "Gustav-2008", plot_object = gustav_map, plot_points = TRUE, 
@@ -64,3 +84,14 @@ track_buoy <- gustav_tracks + geom_point(data=my_sf, aes(y=latitude, x=longitude
 track_buoy
 data(map_tracks)
 >>>>>>> a3baaa044c339fd40159c959d5c56233bfa9ac97
+=======
+tornado_map <- map_event_exposure(storm = "Gustav-2008", event_type = "tornado")
+gus_tornado<- map_tracks(storms = "Gustav-2008", plot_object = tornado_map, plot_points = TRUE, 
+                       color = "darkgray")
+tornado_buoy <- gus_tornado + 
+  ggtitle("Gustav Tornado and Buoys") +
+  geom_point(data=my_sf,aes(y=latitude, x=longitude, 
+                            col=factor(buoy_names), shape=factor(buoy_names)))+
+  scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
+# tornado_buoy
+>>>>>>> 69e5ee59a69b0b1d612ecf76585179ed528a135c
