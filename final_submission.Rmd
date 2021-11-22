@@ -19,16 +19,6 @@ library(tidyr)
 library(ggplot2)
 ```
 
-## Map
-```{r}
-# Storm track
-
-
-```
-
-
-
-
 ## Data cleaning and wrangling
 
 ```{r}
@@ -48,7 +38,6 @@ gustav <- gustav_county %>% inner_join(gustav_winds, by=c("fips", "storm_id", "u
 
 ```{r}
 gustav_var <- gustav[, c(1, 5, 6, 9:13)]
-gustav_var <- as.data.frame(gustav_var)
 
 # variogram: precip_max
 gustav_var$y = as.numeric(gustav_var$latitude)
@@ -74,13 +63,13 @@ abline(v = v_fit$range[2], col = "gray")
 
 ```{r}
 # variogram: vmax_gust
-gustav_var$y = as.numeric(gustav_var$latitude)
-gustav_var$x = as.numeric(gustav_var$longitude)
-coordinates(gustav_var) = ~x+y
+#gustav_var$y = as.numeric(gustav_var$latitude)
+#gustav_var$x = as.numeric(gustav_var$longitude)
+#coordinates(gustav_var) = ~x+y
 gaussian_variogram <- function (n, ps, r)
   function (h) n + ps * (1 - exp(-(h / r) ^ 2))
 v_f <- gaussian_variogram(v_fit$psill[1], v_fit$psill[2], v_fit$range[2])
-v <- variogram( vmax_gust ~ 1, gustav_var)
+v <- variogram(vmax_gust ~ 1, gustav_var)
 v_fit <- fit.variogram(v, vgm("Gau"))
 
 h <- seq(0, 50, length = 1000)
@@ -93,14 +82,6 @@ abline(v = v_fit$range[2], col = "gray")
 #plot(automap::autofitVariogram(vmax_gust ~ x+y, gustav_var))
 ```
 
-```{r}
-#empirical variogram
-coord <- gustav_var[,2:3]
-v_v <- variog(coords=coord, data=gustav_var$vmax_gust, estimator.type='modulus')
-plot(v_v)
-```
-
-
 ## Time seires
 
 ```{r}
@@ -110,6 +91,11 @@ data42007 <- read.csv("buoy data/42007.csv")
 data42039 <- read.csv("buoy data/42039.csv")
 data42040 <- read.csv("buoy data/42040.csv")
 data42059 <- read.csv("buoy data/42059.csv")
+colnames(data42003)[1] <- "X.YY"
+colnames(data42007)[1] <- "X.YY"
+colnames(data42039)[1] <- "X.YY"
+colnames(data42040)[1] <- "X.YY"
+colnames(data42059)[1] <- "X.YY"
 
 # data clean
 hi <- function(x){
@@ -162,6 +148,6 @@ ggplot()+
   scale_color_manual(values = colors)
 ```
 
-## Descirbe storm track from landfall to inland boundary
+
 
 
