@@ -37,7 +37,8 @@ for (i in 1:N){
        names(file)[1]<-"YEAR"
        BUOYS_DF <- rbind(BUOYS_DF,file )
      }
-  }
+}
+#a little bit cumbersome method
 BUOYS_DF$HOUR = as.numeric(BUOYS_DF$hh)
 BUOYS_DF$DAY = as.numeric(BUOYS_DF$DD)
 BUOYS_DF$WDIR_NUM = as.numeric(BUOYS_DF$WDIR)
@@ -76,16 +77,13 @@ cutoff <- cutoff[,c("BUOY_ID","MM","DD","hh", "WSPD_NUM")] %>%
 BUOY_ID<-c('42003','42007','42039','42040','42059', '42001','42035','42036')
 lat<-c(25.92,30.09,28.78,29.2,15.28, 25.93,29.22,28.5)
 long<-c(-85.6,-88.77,-86,-88.23,-67.47, -89.65,-94.4,-84.5)
-buoy_lat_long<-cbind(BUOY_ID,lat,long)
-buoy_lat_long<-as.data.frame(buoy_lat_long)
-cutoff <- left_join(cutoff,buoy_lat_long, by = "BUOY_ID" )
+buoy_position<-cbind(BUOY_ID,lat,long)
+buoy_position<-as.data.frame(buoy_position)
+cutoff <- left_join(cutoff,buoy_position, by = "BUOY_ID" )
 BUOYS_AVERAGE<- cutoff %>% 
       group_by(MM,DD,hh) %>% summarise(WSPD_MEAN  = mean(WSPD_adjusted)) %>% 
       mutate(date =paste0("2008",MM,DD,hh,"00"))
 cutoff <- cutoff %>% mutate(long = as.numeric(long), lat = as.numeric(lat)) %>% mutate(long2 = -1*long)
-BUOYS_6HOUR_SNAPSHOT_AVE <- cutoff %>% 
-      group_by(BUOY_ID, lat, long2) %>% 
-      summarise(WSPD_adjusted_mean = mean(WSPD_adjusted))
 ```
 
 ```{r}
@@ -97,7 +95,7 @@ data("hurr_tracks")
 data("rain")
 head(hurr_tracks)
 head(rain, 15)
-#
+#loading
 Gustav_ht2 <- select(filter(as.data.frame(hurr_tracks), storm_id == "Gustav-2008"), -c(storm_id, usa_atcf_id))
 cutoff <- cutoff %>% mutate(long = as.numeric(long), lat = as.numeric(lat)) %>% mutate(long2 = -1*long)
 Gustav_Buoy2 <- inner_join(Gustav_ht2, cutoff, by = "date")
