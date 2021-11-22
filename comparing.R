@@ -1,121 +1,71 @@
-library(sp)
-library(gstat)
-library(tmap)
-library(automap)
-library(geoR)
-library(tidyr)
-library(ggplot2)
+#library
 library(tidyverse)
-library(magrittr)
-
-
-
+library(tidyr)
+#prepare for the data
+library(drat)
+library(hurricaneexposure)
+library(hurricaneexposuredata)
+addRepo("geanders")
+data("hurr_tracks")
+head(hurr_tracks)
+#loading
+Gustav <- select(filter(as.data.frame(hurr_tracks), storm_id == "Gustav-2008"), -c(usa_atcf_id,storm_id))
+#read data(modified some code from Professor Wright)
 url_half1 <- "http://www.ndbc.noaa.gov/view_text_file.php?filename="
 url_half2 <- "h2008.txt.gz&dir=data/historical/stdmet/"
-buoys <- c('42003','42007','42039','42040','42059', '42001','42035','42036')
+buoys <- c('42003','42007','42039','42040','42059','42001','42035','42036')
 urls <- str_c(url_half1, buoys, url_half2, sep = "")
 N <- length(urls) #N should equal the number of buoys used
+Buoys <- data.frame(Date=as.Date(character()),
+                 File=character(),
+                 User=character(),
+                 stringsAsFactors=FALSE)
 for (i in 1:N){
   suppressMessages(  ###  This stops the annoying messages on your screen.
     file <- read_table(urls[i], col_names = TRUE)
   )
-  if (i == 1){
-    BUOYS_DF <- file %>% mutate(BUOY_ID = buoys[i]) %>% filter(MM == "08" | MM == "09")
-    names(BUOYS_DF)[1]<-"YEAR"
-  }
-  if (i != 1){
     file %<>% mutate(BUOY_ID = buoys[i]) %>% filter(MM == "08" | MM == "09")
     names(file)[1]<-"YEAR"
-    BUOYS_DF <- rbind(BUOYS_DF,file )
-  }
+    Buoys <- rbind(Buoys,file )
 }
-#a little bit cumbersome method
-BUOYS_DF$HOUR = as.numeric(BUOYS_DF$hh)
-BUOYS_DF$DAY = as.numeric(BUOYS_DF$DD)
-BUOYS_DF$WDIR_NUM = as.numeric(BUOYS_DF$WDIR)
-BUOYS_DF$WSPD_NUM = as.numeric(BUOYS_DF$WSPD)
-BUOYS_DF$GST_NUM  = as.numeric(BUOYS_DF$GST)
-BUOYS_DF$WVHT_NUM = as.numeric(BUOYS_DF$WVHT)
-BUOYS_DF$DPD_NUM  = as.numeric(BUOYS_DF$DPD)
-BUOYS_DF$APD_NUM  = as.numeric(BUOYS_DF$APD)
-BUOYS_DF$MWD_NUM  = as.numeric(BUOYS_DF$MWD)
-BUOYS_DF$PRES_NUM = as.numeric(BUOYS_DF$PRES)
-BUOYS_DF$ATMP_NUM = as.numeric(BUOYS_DF$ATMP)
-BUOYS_DF$WTMP_NUM = as.numeric(BUOYS_DF$WTMP)
-BUOYS_DF$DEWP_NUM = as.numeric(BUOYS_DF$DEWP)
-BUOYS_DF$VIS_NUM  = as.numeric(BUOYS_DF$VIS)
-BUOYS_DF$TIDE_NUM = as.numeric(BUOYS_DF$TIDE)
-
-
-
-#Gustav period: 8-25 and 9-3
-BUOYS_DF1 <- filter(BUOYS_DF, MM=="08" & DD>"24")
-BUOYS_DF2 <- filter(BUOYS_DF, MM=="09" & DD<"04")
-BUOYS_DF <- rbind(BUOYS_DF1,BUOYS_DF2)
+#period: 8-25 to 9-3
+Buoys_1 <- filter(Buoys, MM=="08" & DD>"24")
+Buoys_2 <- filter(Buoys, MM=="09" & DD<"04")
+Buoys <- rbind(Buoys_1,Buoys_2)
 #separate into 4 parts
-BUOYS_DF$BUOYS_QTR <- ifelse(BUOYS_DF$HOUR<=6,1,
-                             ifelse(BUOYS_DF$HOUR>6 & BUOYS_DF$HOUR<=12,2,
-                                    ifelse(BUOYS_DF$HOUR>12 & BUOYS_DF$HOUR<=18,3,4)))
-cutoff <- BUOYS_DF %>% filter(HOUR == 6 | HOUR == 12 | HOUR == 18 | HOUR == 00 )
-
-cutoff <- cutoff[,c("BUOY_ID","MM","DD","hh", "WSPD_NUM")] %>% 
-  mutate(WSPD_adjusted =WSPD_NUM*1.94 ) %>% 
-  mutate(date =paste0("2008",MM,DD,hh,"00"))
-
-
-
-#create dataframe
-BUOY_ID<-c('42003','42007','42039','42040','42059', '42001','42035','42036')
-lat<-c(25.92,30.09,28.78,29.2,15.28, 25.93,29.22,28.5)
-long<-c(-85.6,-88.77,-86,-88.23,-67.47, -89.65,-94.4,-84.5)
-buoy_position<-cbind(BUOY_ID,lat,long)
-buoy_position<-as.data.frame(buoy_position)
-cutoff <- left_join(cutoff,buoy_position, by = "BUOY_ID" )
-BUOYS_AVERAGE<- cutoff %>% 
-  group_by(MM,DD,hh) %>% summarise(WSPD_MEAN  = mean(WSPD_adjusted)) %>% 
-  mutate(date =paste0("2008",MM,DD,hh,"00"))
+str(Buoys)
+Buoys$HOUR = as.numeric(Buoys$hh)
+Buoys$DAY = as.numeric(Buoys$DD)
+Buoys$WSPD1 = as.numeric(Buoys$WSPD)
+Buoys$Buoys_4parts <- ifelse(Buoys$HOUR<=6,1,
+                      ifelse(Buoys$HOUR>6 & Buoys$HOUR<=12,2,
+                      ifelse(Buoys$HOUR>12 & Buoys$HOUR<=18,3,4)))
+cutoff <- Buoys %>% filter(HOUR == 0|HOUR == 6|HOUR == 12|HOUR == 18)
+cutoff <- cutoff[,c("BUOY_ID","MM","DD","hh", "WSPD1")] %>% mutate(date =paste0("2008",MM,DD,hh,"00"))
+#create lat and long
+BUOY_ID <- c('42003','42007','42039','42040','42059', '42001','42035','42036')
+lat <- c(25.92,30.09,28.78,29.2,15.28, 25.93,29.22,28.5)
+long <- c(-85.6,-88.77,-86,-88.23,-67.47, -89.65,-94.4,-84.5)
+Buoys_position <- cbind(BUOY_ID,lat,long)
+Buoys_position <- as.data.frame(Buoys_position)
+cutoff <- left_join(cutoff,Buoys_position, by = "BUOY_ID" )
+Buoys_mean <- cutoff %>% group_by(MM,DD,hh) %>% summarise(WSPD2=mean(WSPD1)) %>% mutate(date =paste0("2008",MM,DD,hh,"00"))
 cutoff <- cutoff %>% mutate(long = as.numeric(long), lat = as.numeric(lat)) %>% mutate(long2 = -1*long)
-
-
-
-library(drat)
-library(hurricaneexposuredata)
-library(hurricaneexposure)
-addRepo("geanders")
-data("hurr_tracks")
-data("rain")
-head(hurr_tracks)
-head(rain, 15)
-#loading
-Gustav_ht2 <- select(filter(as.data.frame(hurr_tracks), storm_id == "Gustav-2008"), -c(storm_id, usa_atcf_id))
-cutoff <- cutoff %>% mutate(long = as.numeric(long), lat = as.numeric(lat)) %>% mutate(long2 = -1*long)
-Gustav_Buoy2 <- inner_join(Gustav_ht2, cutoff, by = "date")
-
-
-
-ggplot(data=Gustav_Buoy2) + geom_point(mapping=aes(x=date, y = wind), color="black", shape = 10, size = 2) +
-  geom_point(mapping= aes(date, y=WSPD_adjusted, color=BUOY_ID, show.legend=TRUE,), shape = 10, size = 2) +
+#final data
+Buoys_final1 <- inner_join(cutoff,Gustav,by = "date")
+Buoys_final2 <- inner_join(Buoys_mean,Gustav,by ="date")
+#plot1
+ggplot(data=Buoys_final1) +
+  geom_point(mapping=aes(x=date, y = wind), color="black", shape = 16, size = 2) +
+  geom_point(mapping= aes(date, y=WSPD1, color=BUOY_ID, show.legend=TRUE,), shape = 16, size = 2) +
   theme(axis.text.x = element_text(angle = 40, hjust = 1),legend.position = "right") + 
-  xlab("Date")  + 
-  ylab("Wind Speed") +
-  labs(title = "Wind Speeds of Hurricane vs Different Buoys", subtitle= "Black point : hurricane data, cross point : different buoys data")
-
-
-
-Gustav_Buoy <- inner_join(Gustav_ht2, BUOYS_AVERAGE, by ="date")
-ggplot(data=Gustav_Buoy) + geom_point(mapping=aes(x=date, y=wind), color="black", shape= 10, size = 2) +
-  geom_point(mapping=aes(date, y = WSPD_MEAN, color=WSPD_MEAN, show.legend=TRUE), shape= 10, size = 2) +
+  labs("date","wind",title = "Wind Speeds of Hurricane vs Different Buoys") 
+#plot2
+ggplot(data=Buoys_final2) + 
+  geom_point(mapping=aes(x=date, y=wind), color="black", shape= 16, size = 2) +
+  geom_point(mapping=aes(date, y=WSPD2, color=WSPD2, show.legend=TRUE), shape = 16, size = 2) +
   theme(axis.text.x = element_text(angle = 40, hjust = 1),legend.position = "right") + 
-  xlab("Date")  + 
-  ylab("Wind Speed") + 
-  labs(title="Wind Speeds of Hurricane vs Average Buoys", subtitle= "Black point : hurricane data, different blue point : average buoys data")
-
-
-
-
-
-
-
+  labs("date","wind",title="Wind Speeds of Hurricane vs Average Buoys")
 
 
 
