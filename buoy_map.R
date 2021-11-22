@@ -40,3 +40,4 @@ gus_flood +
   geom_point(data=my_sf,aes(y=latitude, x=longitude, 
                             col=factor(buoy_names), shape=factor(buoy_names)))+
   scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
+

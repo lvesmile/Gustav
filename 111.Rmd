@@ -1,0 +1,30 @@
+---
+title: "Analysis of Landfall of Hurricane Gustav 2008"
+author: "Mi Zhang, Qiannan Shen, Peng Liu, Yujia Wang"
+date: "11/21/2021"
+output: 
+  pdf_document: 
+    latex_engine: lualatex
+header-includes: 
+  - \usepackage{setspace}\renewcommand{\baselinestretch}{1.5}
+  - \setlength{\parindent}{2em}
+  - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+
+# source("gustav.R")
+source("buoy data/timeseries.R")
+# source("variogram.R")
+# source("buoy_map.R")
+# source("data table.R")
+
+
+```
+
+```{r echo = FALSE, message=FALSE}
+
+kable(gustav[c(1:3, 5:11),], caption = "Median Buoy Data in Every 6 Hours", booktabs = T) %>%
+  kable_styling(latex_option = "striped")
+
+```
