@@ -13,8 +13,8 @@ header-includes:
 
 ```{r setup, include=FALSE}
 
-source("gustav.R")
-source("buoy data/timeseries.R")
+# source("gustav.R")
+# source("buoy data/timeseries.R")
 # source("variogram.R")
 # source("buoy_map.R")
 # source("data table.R")
@@ -24,7 +24,31 @@ source("buoy data/timeseries.R")
 
 ```{r echo = FALSE, message=FALSE}
 
-# kable(gustav[c(1:3, 5:11),], caption = "Median Buoy Data in Every 6 Hours", booktabs = T) %>%
-#   kable_styling(latex_option = "striped")
+library(dplyr)
+library(hurricaneexposuredata)
+library(hurricaneexposure)
+library(kableExtra)
+
+gustav_rain <- filter(rain, rain$storm_id == "Gustav-2008" & rain$lag == 0)
+
+#counties' latitude and longitude
+data(county_centers)
+
+#wind
+data(storm_winds)
+
+#filter needed data for Gustav
+gustav_winds <- filter(storm_winds, storm_id=="Gustav-2008")
+
+#combine three datasets into one dataset, including all needed variables
+gustav_county <- county_centers %>% inner_join(gustav_rain,by="fips")
+gustav <- gustav_county %>% inner_join(gustav_winds, by=c("fips", "storm_id", "usa_atcf_id"))
+
+table_variogram <- gustav %>%
+  rename(county = "county_name") %>%
+  rename(state = "state_name")
+
+kable(gustav[c(913, 910, 915, 953, 900, 938, 922), c(1:3, 5, 6, 9:13)], caption = "Data frame for variogram in daily precipitation", booktabs = T) %>%
+  kable_styling(latex_option = "striped")
 
 ```

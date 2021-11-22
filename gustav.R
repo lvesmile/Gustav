@@ -59,14 +59,14 @@ map_counties(storm = "Gustav-2008", metric = "distance")
 #distance exposure map
 map_distance_exposure(storm = "Gustav-2008", dist_limit = 75)
 
-library(weathermetrics)
+library(weathermetrics)  
 
 #wind exposure map with speed over 17.5 m/s
 map_wind_exposure(storm = "Gustav-2008",
                   wind_limit = convert_wind_speed(34, "knots","mps"))
 
 # flood exposure map 
-map_event_exposure(storm = "Gustav-2008", event_type = "flood")
+map_event_exposure(storm = "Gustav-2008", event_type = "flood") 
 
 #tornado exposure map
 map_event_exposure(storm = "Gustav-2008", event_type = "tornado")
@@ -74,3 +74,11 @@ map_event_exposure(storm = "Gustav-2008", event_type = "tornado")
 #hurricane track map 
 map_tracks(storms = "Gustav-2008")
 
+# #hurricane track map and precip_max
+# 
+# map_tracks(storms = "Gustav-2008") + 
+#   ggplot() + geom_sf(data = gustav_var1, aes(fill = precip_max)) + 
+#   scale_fill_distiller(palette="Reds", trans = "reverse")+
+#   ggtitle("Rain Gustav and Buoys") +
+#   geom_point(data=my_sf,aes(y=latitude, x=longitude, col=factor(buoy_names),shape=factor(buoy_names)))+
+#   scale_shape_manual(values=c(9, 12, 13, 14, 15, 16, 17, 18))
