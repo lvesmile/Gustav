@@ -60,6 +60,7 @@ BUOYS_DF$TIDE_NUM = as.numeric(BUOYS_DF$TIDE)
 BUOYS_DF1 <- filter(BUOYS_DF, MM=="08" & DD>"24")
 BUOYS_DF2 <- filter(BUOYS_DF, MM=="09" & DD<"04")
 BUOYS_DF <- rbind(BUOYS_DF1,BUOYS_DF2)
+#separate into 4 parts
 BUOYS_DF$BUOYS_QTR <- ifelse(BUOYS_DF$HOUR<=6,1,
                       ifelse(BUOYS_DF$HOUR>6 & BUOYS_DF$HOUR<=12,2,
                       ifelse(BUOYS_DF$HOUR>12 & BUOYS_DF$HOUR<=18,3,4)))
@@ -79,7 +80,7 @@ buoy_lat_long<-cbind(BUOY_ID,lat,long)
 buoy_lat_long<-as.data.frame(buoy_lat_long)
 cutoff <- left_join(cutoff,buoy_lat_long, by = "BUOY_ID" )
 BUOYS_AVERAGE<- cutoff %>% 
-      group_by(MM,DD,hh) %>% summarise(WSPD_MEAN  = mean(WSPD_adjusted), WSPD_SD  = sd(WSPD_adjusted)) %>% 
+      group_by(MM,DD,hh) %>% summarise(WSPD_MEAN  = mean(WSPD_adjusted)) %>% 
       mutate(date =paste0("2008",MM,DD,hh,"00"))
 cutoff <- cutoff %>% mutate(long = as.numeric(long), lat = as.numeric(lat)) %>% mutate(long2 = -1*long)
 BUOYS_6HOUR_SNAPSHOT_AVE <- cutoff %>% 
