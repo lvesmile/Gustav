@@ -1,6 +1,7 @@
 library(geoR)
 library(tidyr)
 library(ggplot2)
+library(dplyr)
 
 data42001 <- read.csv("buoy data/42001.csv")
 data42003 <- read.csv("buoy data/42003.csv")
@@ -126,7 +127,8 @@ time_series_buoy <- function(variable, name){
 
 time_series_buoy(WDIR, "WDIR")
 time_series_buoy(WSPD, "WSPD")
-time_series_buoy(GST, "GST")
+
+GST_PLOT <- time_series_buoy(GST, "GST(m/s)") + ggtitle("Time Series Plot for Gust Speed of Buoys")
 
 time_series_buoy(ATMP, "ATMP")
 time_series_buoy(WTMP, "WTMP")
@@ -144,7 +146,7 @@ j <- data42059_clean %>% filter(PRES != 9999)
 colors <- c("42001" = "plum3", "42003" = "gray", "42007" = "tomato", "42035" = "mediumseagreen", 
             "42036" = "blue", "42039" = "yellow", "42040" = "skyblue", "42059" = "orange")
 
-ggplot()+
+PRES_PLOT <- ggplot()+
   geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(PRES), color = "42001"), lwd =0.8) +
   geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(PRES), color = "42003"), lwd =0.8) +
   geom_line(data = data42007_clean, aes(x=date_time, y=as.numeric(PRES), color = "42007"), lwd =0.8) +
@@ -153,7 +155,8 @@ ggplot()+
   geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(PRES), color = "42039"), lwd =0.8) +
   geom_line(data = data42040_clean, aes(x=date_time, y=as.numeric(PRES), color = "42040"), lwd =0.8) +
   geom_line(data = j, aes(x=date_time, y=as.numeric(PRES), color = "42059"), lwd =0.8) +
-  labs(y = "PRES", x = "time", color = "Legend")+
+  labs(y = "PRES(hPa)", x = "time", color = "Legend")+
+  ggtitle("Time Series Plot for Sea Level Pressure of Buoys")+
   scale_color_manual(values = colors)
 
 #DEWP --------------------------------------------------------------------------
@@ -181,7 +184,10 @@ j2 <- data42007_clean %>% filter(WVHT != 99)
 j3 <- data42040_clean %>% filter(WVHT != 99)
 j4 <- data42036_clean %>% filter(WVHT != 99)
 
-ggplot()+
+colors <- c("42001" = "plum3", "42003" = "gray", "42007" = "tomato", "42035" = "mediumseagreen", 
+            "42036" = "blue", "42039" = "yellow", "42040" = "skyblue", "42059" = "orange")
+
+WVHT_PLOT <- ggplot()+
   geom_line(data = data42001_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42001"), lwd =0.8) +
   geom_line(data = data42003_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42003"), lwd =0.8)+
   geom_line(data = j2, aes(x=date_time, y=as.numeric(WVHT), color = "42007"), lwd =0.8) +
@@ -190,7 +196,8 @@ ggplot()+
   geom_line(data = data42039_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42039"), lwd =0.8) +
   geom_line(data = j3, aes(x=date_time, y=as.numeric(WVHT), color = "42040"), lwd =0.8) +
   geom_line(data = data42059_clean, aes(x=date_time, y=as.numeric(WVHT), color = "42059"), lwd =0.8) +
-  labs(y = "WVHT", x = "time", color = "Legend")+
+  labs(y = "WVHT(meters)", x = "time", color = "Legend")+
+  ggtitle("Time Series Plot for Significant Wave Height of Buoys")+
   scale_color_manual(values = colors)
 
 
