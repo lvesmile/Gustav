@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.13.2 (TeX Live 2021)  (format=lualatex 2021.11.23)  23 NOV 2021 01:22
+This is LuaHBTeX, Version 1.13.2 (TeX Live 2021)  (format=lualatex 2021.11.23)  23 NOV 2021 01:27
  restricted system commands enabled.
 **Gustav-Report.tex
 (./Gustav-Report.tex
@@ -1171,7 +1171,7 @@ ort_files/figure-latex/unnamed-chunk-17-1.pdf>] [15] [16] (./Gustav-Report.aux)
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `Gustav-Report.out' has not changed.
-(rerunfilecheck)             Checksum: FEBC5441B7FB86CFA00F9543A6D74F3C;2477.
+(rerunfilecheck)             Checksum: 00695A36F66E5AA957FAAF4510FBDAC8;2488.
 )
 
 Here is how much of LuaTeX's memory you used:
@@ -1182,7 +1182,7 @@ Here is how much of LuaTeX's memory you used:
  8 attribute_list, 1 write, 1 user_defined nodes
    avail lists: 1:1,2:1595,3:151,4:386,5:586,6:25,7:4800,8:58,9:1159,10:8,11:303
  40757 multiletter control sequences out of 65536+600000
- 70 fonts using 20887695 bytes
+ 70 fonts using 20887619 bytes
  86i,9n,121p,329b,409s stack positions out of 5000i,500n,10000p,200000b,80000s
 </Users/mizhang/Library/TinyTeX/texmf-dist/fonts/opentype/public/lm/lmmono10-reg
 ular.otf></Users/mizhang/Library/TinyTeX/texmf-dist/fonts/opentype/public/lm/lmr
@@ -1190,7 +1190,7 @@ oman10-regular.otf></Users/mizhang/Library/TinyTeX/texmf-dist/fonts/opentype/pub
 lic/lm/lmroman12-bold.otf></Users/mizhang/Library/TinyTeX/texmf-dist/fonts/opent
 ype/public/lm/lmroman12-regular.otf></Users/mizhang/Library/TinyTeX/texmf-dist/f
 onts/opentype/public/lm/lmroman17-regular.otf>
-Output written on Gustav-Report.pdf (16 pages, 2620673 bytes).
+Output written on Gustav-Report.pdf (16 pages, 2620607 bytes).
 
 PDF statistics: 312 PDF objects out of 1000 (max. 8388607)
  232 compressed objects within 3 object streams

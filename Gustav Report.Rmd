@@ -225,7 +225,7 @@ For Buoy 42007, NOAA has the data started on August 29th, 2008, so we don’t ha
 
 Buoy 42059 is located at the Greater Antilles which is far from Gustav’s landfall location which explains why Buoy 42059 showed mild fluctuations in most of our time series plots. However, it is important to include its buoy data in our analysis because Gustav also caused considerable damage in Haiti and Cuba.
 
-# Single buoy to multiple buoys:
+## Single buoy to multiple buoys:
 
 While a hurricane is not static, it is obvious that one buoy can only provide useful analytic information when a hurricane is close to it. Multiple buoys ensure that we have more comprehensive and accurate data for landfall analysis. 
 
