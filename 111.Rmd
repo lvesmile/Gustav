@@ -11,44 +11,149 @@ header-includes:
   - \usepackage{float}
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning= FALSE, echo=FALSE, message=FALSE}
 
-# source("gustav.R")
-# source("buoy data/timeseries.R")
-# source("variogram.R")
-# source("buoy_map.R")
-# source("data table.R")
-# source("variogram——test.R")
+source("gustav.R")
+source("buoy data/timeseries.R")
+source("variogram.R")
+source("buoy_map.R")
+source("data table.R")
+source("variogram_test.R")
+source("buoy_hurri_plot.R")
+
+```
+
+\vspace{-0.8cm}
+
+# Abstract
+
+A written report serves better in providing comprehensive information about our analysis and aiding in generating an attractive story. In this report, we aim to discuss the extreme weather conditions caused by Hurricane Gustav after landing in 2008, such as floods and tornadoes. On the other hand, we would like to compare NOAA Buoy data over the sea to inland Hurricane Exposure data and regulate their correlation for Gustav's landfall.
+
+# Introduction
+
+Hurricane Gustav was the second most destructive hurricane in 2008 and caused an economic loss of 6 billion dollars in the United States, 2.3 billion dollars in Cuba, and 210 million dollars in Jamaica. Gustav also caused hundreds of deaths in those countries. According to the National Hurricane Center, hurricane Gustav was formed on August 25th, reached the peak on September 1st, and finally dissipated on September 4th, 2008. Hurricane Gustav made its first landing on Cocodrie, Louisiana, and moved northeast into the Great Lake in the United States. The plot below showed a hurricane exit track of Gustav from the Gulf of Mexico to Great Lake.
+
+```{r echo = F, fig.height=2.5, fig.align='center', fig.cap="map of Bonnie track"}
+# Figure 1, map of Bonnie track
+map_tracks(storms = "Gustav-2008")+
+  ggtitle("Gustav Hurricane Tracks")
+
+```
+
+# Extreme Weather Condition
+
+```{r echo = F, fig.height=2.5, fig.align='center'}
+#Figure 2, Rainfall and Buoys Map
+rain_buoy
+
+```
+
+Figure 2 shows that Gustav has major rainfall in Louisiana, Arkansas, and Mississippi. As Hurricane Gustav moved to the northeast, the amount of rainfall decreased. It is also well noted that Gustav has caused rainfalls on the east coast.
+
+```{r echo = F, fig.height=2.5, fig.align='center'}
+#Figure 3, Flood Event and Buoys Map
+flood_buoy
+
+```
+
+Using the flood and buoy map, Figure 3 we confirmed that high rainfalls caused flooding in those exposed counties of the states. We also notice that the exposure map shows more counties have been exposed to flooding in Missouri. However, there is no flood event on the east coast which suggests that only rainfall above 125 millimeters can cause flooding.
+
+```{r echo = F, fig.height=2.5, fig.align='center'}
+#Figure 4, Wind and Buoys Map
+wind_buoy
+
+```
+
+Figure 4 shows that the strong winds are formed at landfall location in Louisiana and along the hurricane track towards the northeast. Noticed that the highest gust wind speed happened at 66.79 m/s in Terrebonne, Louisiana.
+
+```{r echo = F, fig.height=2.5, fig.align='center'}
+#Figure 5, Tornado Event and Buoys Map
+tornado_buoy
+
+```
+
+Figure 5 displays a more interesting result as the effect of Hurricane Gustav. Besides those states that are around the hurricane track of Gustav, several counties of Florida had been exposed to tornado events.
+
+# Data Overview
+
+## Gustav-variogram Data
+
+```{r echo = FALSE, message=FALSE}
+#Table 1, Hurricane Exposure Data - Rain 
+data_1
 
 ```
 
 ```{r echo = FALSE, message=FALSE}
+#Table 2, Hurricane Exposure Data - Storm_winds 
+data_2
 
-library(dplyr)
-library(hurricaneexposuredata)
-library(hurricaneexposure)
-library(kableExtra)
+```
 
-gustav_rain <- filter(rain, rain$storm_id == "Gustav-2008" & rain$lag == 0)
+Table 1 and Table 2 display the Hurricane Exposure data table used for variograms. The variables that we mainly worked on are vmax_gust(maximum speed of gust wind in m/s) and precip_max(maximum precipitation in millimeters). Data is cleaned and processed ready for use in geospatial analysis.
 
-#counties' latitude and longitude
-data(county_centers)
+## Time Series Data
 
-#wind
-data(storm_winds)
+```{r echo = FALSE, message=FALSE}
+#Table 3, Buoy Data for Time Series
+data_3
 
-#filter needed data for Gustav
-gustav_winds <- filter(storm_winds, storm_id=="Gustav-2008")
+```
 
-#combine three datasets into one dataset, including all needed variables
-gustav_county <- county_centers %>% inner_join(gustav_rain,by="fips")
-gustav <- gustav_county %>% inner_join(gustav_winds, by=c("fips", "storm_id", "usa_atcf_id"))
+Table 3 displays the Buoy data table used for time series plots including datetime and several variables.
 
-table_variogram <- gustav %>%
-  rename(county = "county_name") %>%
-  rename(state = "state_name")
+# Variograms
+```{r echo = F, fig.height=2.5, fig.align='center'}
+#Figure 6, Spatial Map for Gust Wind
+knitr::include_graphics("tmap_precip.png")
 
-kable(gustav[c(913, 910, 915, 953, 900, 938, 922), c(1:3, 5, 6, 9:13)], caption = "Data frame for variogram in daily precipitation", booktabs = T) %>%
-  kable_styling(latex_option = "striped")
+```
+
+@@@@@@@@@@@@@
+
+```{r echo = F, fig.height=2.5, fig.align='center'}
+#Figure 7, Variogram for Max Precipitation
+plot(v$dist, v$gamma,
+     xlab = "distance", ylab = "semivariogram", main="Variogram for Max Precipitation")
+lines(h, v_f(h))
+abline(v = v_fit$range[2], col = "gray")
+
+```
+
+Figure 7 is calculated and fitted by the spherical variogram model. Distance is calculated by the distance difference between the two randomly paired counties. The increase on the slope of the fitted line demonstrates the increasing variability of maximum precipitation as Gustav travels between two counties. When the fitted line becomes flat which means there is no correlation between two counties and also relates to the dissipation of the hurricane. From Figure we can see that its sill (variance) is close to 700. The range, and the distance at which the variogram reaches the sill, is between 9 and 10.
+
+```{r echo = F, fig.height=2.5, fig.align='center', warning=FALSE}
+#Figure 8, Variogram for Gust Wind
+plot(v1$dist, v1$gamma,
+     xlab = "distance", ylab = "semivariogram", main="Variogram for Max Gust of Wind")
+lines(h1, v_f1(h))
+abline(v1 = v_fit1$range[2], col = "gray")
+
+```
+
+Figure 8 is calculated and fitted by the gaussian variogram model. Distance is calculated by the distance difference between two randomly paired counties. The increase in the slope of the fitted line demonstrates the increasing variability of maximum wind speed as Gustav travels between two counties. When the fitted line becomes flat which means there is no correlation between the two counties and also relates to the dissipation of the hurricane.
+
+# Empirical Variogram
+
+```{r echo = F, fig.height=2.5, fig.align='center', figures-side}
+#Figure 9.1, Empirical Variogram for Gust Wind
+
+coord <- gustav_var[,2:3]
+vmax_empir <-variog(coords = coord, data = gustav_var$vmax_gust,estimator.type='modulus')
+plot(vmax_empir,main = "empirical variogram of vmax_gust")
+
+#Figure 9.2, Empirical Variogram for Gust Wind
+precip_empir <- variog(coords = coord, data = gustav_var$precip_max,estimator.type='modulus')
+plot(precip_empir, main = "empirical variogram of precip_max")
+
+```
+
+Unlike the variogram model, the empirical variogram is not a smooth curve because a limited number of samples calculates it. Its distance is also based on the actual situation of the data, which is longer than the variogram. Therefore, the points in the Figure 9.1 and 9.2 show a positive correlation, reaching a peak around 10, the same as the variogram. Then the semivariance began to decrease as the distance got farther, and the maximum rainfall and maximum wind gusts near the distance of 30 were close to flat.
+
+```{r echo = F, fig.height=2.5, fig.align='center', warning=FALSE}
+#Figure 9, Empirical Variogram for Gust Wind
+coord <- gustav_var[,2:3]
+vmax_empir <-variog(coords = coord, data = gustav_var$vmax_gust,estimator.type='modulus')
+plot(vmax_empir,main = "empirical variogram of vmax_gust")
 
 ```

@@ -64,16 +64,16 @@ abline(v = v_fit$range[2], col = "gray")
 #gaussian model is the best fit for this variable
 gaussian_variogram <- function (n, ps, r)
   function (h) n + ps * (1 - exp(-(h / r) ^ 2))
-v_f <- gaussian_variogram(v_fit$psill[1], v_fit$psill[2], v_fit$range[2])
-v <- variogram(vmax_gust ~ 1, gustav_var)
-v_fit <- fit.variogram(v, vgm("Gau"))
-h <- seq(0, 50, length = 1000)
+v1 <- variogram(vmax_gust ~ 1, gustav_var)
+v_fit1 <- fit.variogram(v, vgm("Gau"))
+v_f1 <- gaussian_variogram(v_fit1$psill[1], v_fit1$psill[2], v_fit1$range[2])
+h1 <- seq(0, 50, length = 1000)
 
 #plot variogram and fitted line
-plot(v$dist, v$gamma,
+plot(v1$dist, v1$gamma,
      xlab = "distance", ylab = "semivariogram", main="Variogram for Max Gust of Wind")
-lines(h, v_f(h))
-abline(v = v_fit$range[2], col = "gray")
+lines(h1, v_f1(h))
+abline(v1 = v_fit1$range[2], col = "gray")
 
 #v_mod_OK <- automap::autofitVariogram(vmax_gust ~ x+y, gustav_var)$var_model
 #plot(automap::autofitVariogram(vmax_gust ~ x+y, gustav_var))
